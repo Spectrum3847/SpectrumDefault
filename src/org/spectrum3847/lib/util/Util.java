@@ -18,7 +18,19 @@ public class Util {
      * Limits the given input to the given magnitude.
      */
     public static double limit(double v, double limit) {
-        return (Math.abs(v) < limit) ? v : limit * (v < 0 ? -1 : 1);
+        return limit(v, limit, -limit);
+    	//return (Math.abs(v) < limit) ? v : limit * (v < 0 ? -1 : 1);
+    }
+    
+    /**
+     * limits input to the max and min
+     * @param v - input
+     * @param max - max value
+     * @param min - min value
+     * @return
+     */
+    public static double limit(double v, double max, double min){
+    	return (v > max) ? max : ((v < min) ? min : v);
     }
 
     public static String joinStrings(String delim, List<?> strings) {

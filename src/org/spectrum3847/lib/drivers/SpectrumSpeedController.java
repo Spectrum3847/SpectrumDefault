@@ -1,6 +1,5 @@
 package org.spectrum3847.lib.drivers;
 
-import org.spectrum3847.lib.util.Debugger;
 import org.spectrum3847.robot.HW;
 import edu.wpi.first.wpilibj.SpeedController;
 

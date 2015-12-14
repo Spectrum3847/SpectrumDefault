@@ -1,16 +1,15 @@
 package org.spectrum3847.robot;
 
-import org.spectrum3847.robot.commands.CommandBase;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /*
- * @author matthew
+ * @author matthew, JAG
  */
 public class Dashboard {
 	
 	public static final boolean ENABLE_DASHBOARD = true;
+	
 	
 	static final double SHORT_DELAY = .015;
     static final double LONG_DELAY = 1;
@@ -34,6 +33,7 @@ public class Dashboard {
     	//SmartDashboard.putBoolean("Compressor", Compressor.enabled());
     }
 
+    
     public static void updateDashboard() {
     	if (ENABLE_DASHBOARD) {
             if ((Timer.getFPGATimestamp() - shortOldTime) > SHORT_DELAY) {

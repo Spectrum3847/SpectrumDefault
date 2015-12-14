@@ -3,8 +3,6 @@ package org.spectrum3847.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-import org.spectrum3847.robot.Robot;
-
 /*
  *
  */

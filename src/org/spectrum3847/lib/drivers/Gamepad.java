@@ -1,7 +1,10 @@
 package org.spectrum3847.lib.drivers;
+import org.spectrum3847.lib.util.Debugger;
+import org.spectrum3847.robot.Robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Joystick.RumbleType;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  *
@@ -36,28 +39,44 @@ public class Gamepad extends Joystick {
 
     private static final int DEFAULT_USB_PORT = 1;
 
+    private String name = "";
+    
     public Gamepad() {
-        this(DEFAULT_USB_PORT);
+        this("Gamepad Port 1", DEFAULT_USB_PORT);
     }
 
-    public Gamepad(int port) {
+    public Gamepad(String n, int port) {
     	super(port);
+    	name = n;
+    }
+    
+    public String getName(){
+    	return name;
     }
 
     public double getLeftX() {
-        return this.getRawAxis(LeftX);
+    	double value = this.getRawAxis(LeftX);
+    	Debugger.println(name +"_Left_X: " + value, Robot.controls, Debugger.debug2);
+        return value;
     }
 
     public double getLeftY() {
-        return -this.getRawAxis(LeftY);
+    	double value = -this.getRawAxis(LeftY);
+    	Debugger.println(name +"_Left_Y: " + value, Robot.controls, Debugger.debug2);
+        return value;
     }
     
     public double getLeftTrigger() {
-    	return this.getRawAxis(LeftTrigger);
+    	double value = -this.getRawAxis(LeftTrigger);
+    	Debugger.println(name +"_Left_Trigger: " + value, Robot.controls, Debugger.debug2);
+        return value;
     }
     
     public double getRightTrigger() {
-    	return this.getRawAxis(RightTrigger);
+    	double value = this.getRawAxis(RightTrigger);
+    	Debugger.println(name +"_Right_Trigger: " + value, Robot.controls, Debugger.debug2);
+        return value;
+    	
     }
     
     public double getOldTriggers() {
@@ -65,15 +84,25 @@ public class Gamepad extends Joystick {
     }
 
     public double getRightX() {
-        return this.getRawAxis(RightX);
+    	double value = this.getRawAxis(RightX);
+    	Debugger.println(name +"_Right_X: " + value, Robot.controls, Debugger.debug2);
+        return value;
     }
 
     public double getRightY() {
-        return this.getRawAxis(RightY);
+    	double value = this.getRawAxis(RightY);
+    	Debugger.println(name +"_Right_Y: " + value, Robot.controls, Debugger.debug2);
+        return value;
     }
 
-    public boolean getButton(int button) {
-        return this.getRawButton(button);
+    public boolean getButtonVal(int button) {
+    	boolean value = this.getRawButton(button);
+        return value;
+    }
+    
+    //Returns a button object
+    public Button getButton(int button){
+    	return new JoystickButton(this, button);
     }
 
     public double getDPad() {

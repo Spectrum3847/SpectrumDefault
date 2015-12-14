@@ -1,8 +1,13 @@
 
 package org.spectrum3847.robot;
 
+import org.spectrum3847.lib.drivers.SpectrumEncoder;
+import org.spectrum3847.lib.util.Debugger;
+import org.spectrum3847.robot.subsystems.Drive;
+import org.spectrum3847.robot.subsystems.MotorWithLimits;
+import org.spectrum3847.robot.subsystems.SolenoidSubsystem;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
@@ -13,8 +18,40 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
  * directory.
  */
 public class Robot extends IterativeRobot {
-
-	public static OI oi;
+	
+    //Add Debug flags
+	//You can have a flag for each subsystem, etc
+	public static final String output = "OUT";
+	public static final String input = "IN";
+	public static final String controls = "CONTROL";
+	public static final String general = "GENERAL";
+	public static final String auton = "AUTON";
+	public static final String commands = "COMMAND";
+	
+	// Create a single static instance of all of your subsystems
+    // This MUST be here. If the OI creates Commands (which it very likely
+    // will), constructing it during the construction of CommandBase (from
+    // which commands extend), subsystems are not guaranteed to be
+    // yet. Thus, their requires() statements may grab null pointers. Bad
+    // news. Don't move it.
+	public static Drive drive; 
+	public static MotorWithLimits motor3;
+	public static SolenoidSubsystem sol_0_1;
+	
+    public static void setupSubsystems(){
+    	drive = new Drive("defaultDrive", 
+    						HW.LEFT_DRIVE_MOTOR_0, HW.LEFT_DRIVE_MOTOR_0_PDP, 
+    						HW.RIGHT_DRIVE_MOTOR_9, HW.RIGHT_DRIVE_MOTOR_9_PDP, 
+    						new SpectrumEncoder(0, 1, 240), new SpectrumEncoder(8,9, 240)
+    						);
+    	
+    	//If used the HW elements should be refactor-renamed to avoid them being used in another part of the code.
+    	motor3 = new MotorWithLimits("Motor 3", HW.PWM_3, HW.PWM_3_PDP, HW.DIGITAL_IO_4, HW.DIGITAL_IO_5);
+    	
+    	//Setup a Solenoid Subsystem and give it an initial state
+    	sol_0_1 = new SolenoidSubsystem("Solenoid - 0 & 1", 0, 1);
+    	sol_0_1.retract();
+    }
     
     //Used to keep track of the robot current state easily
     public enum RobotState {
@@ -35,12 +72,24 @@ public class Robot extends IterativeRobot {
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-    public void robotInit() {
-    	System.out.println("Start robotInit()");
-		oi = new OI();
-		Init.init();
-        // instantiate the command used for the autonomous period
+    public void init() {
+    	initDebugger();
+    	printGeneralInfo("Start robotInit()");
+		setupSubsystems(); //This has to be before the OI is created on the next line
+		HW.oi = new OI();
+        Dashboard.intializeDashboard();
     }
+    
+    private static void initDebugger(){
+    	Debugger.setLevel(Debugger.info3); //Set the initial Debugger Level
+    	Debugger.flagOn(general); //Set all the flags on, comment out ones you want off
+    	Debugger.flagOn(controls);
+    	Debugger.flagOn(input);
+    	Debugger.flagOn(output);
+    	Debugger.flagOn(auton);
+    	Debugger.flagOn(commands);
+    }
+
     
     /**
      * This function is called when the disabled button is hit.
@@ -48,9 +97,9 @@ public class Robot extends IterativeRobot {
      */
     public void disabledInit(){
         setState(RobotState.DISABLED);
-    	System.out.println("Start disabledInit()");
+        printGeneralInfo("Start disabledInit()");
         Disabled.init();
-        System.out.println("End disableInit()");
+        printGeneralInfo("End disableInit()");
     }
     /**
      * This function is called while in disabled mode.
@@ -62,9 +111,9 @@ public class Robot extends IterativeRobot {
 
     public void autonomousInit() {
     	setState(RobotState.AUTONOMOUS);
-    	System.out.println("Start autonomousInit()");
+    	printGeneralInfo("Start autonomousInit()");
         Autonomous.init();
-    	System.out.println("End autonomousInit()");
+        printGeneralInfo("End autonomousInit()");
     }
 
     /**
@@ -76,16 +125,15 @@ public class Robot extends IterativeRobot {
 
     public void teleopInit() {
     	setState(RobotState.TELEOP);
-    	System.out.println("Start teleopInit()");
+    	printGeneralInfo("Start teleopInit()");
         Teleop.init();
-        System.out.println("End teleopInit()");
+        printGeneralInfo("End teleopInit()");
     }
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        Scheduler.getInstance().run();
         Teleop.periodic();
     }
     
@@ -94,5 +142,9 @@ public class Robot extends IterativeRobot {
      */
     public void testPeriodic() {
         LiveWindow.run();
+    }
+    
+    public static void printGeneralInfo(String msg){
+    	Debugger.println(msg, general, Debugger.info3);
     }
 }

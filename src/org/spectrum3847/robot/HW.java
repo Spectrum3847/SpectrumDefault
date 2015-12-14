@@ -1,5 +1,7 @@
 package org.spectrum3847.robot;
 
+import org.spectrum3847.lib.drivers.Gamepad;
+
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 /**
@@ -15,8 +17,14 @@ public class HW {
     // public static int rightMotor = 2;
 	//Use ecplise refacotr tool to rename values for your specific robot
 	
+	//OI
+	public static OI oi;
+	public static final Gamepad Driver_Gamepad = new Gamepad("Driver", HW.USBPORT_0);
+    public static final Gamepad gamepad_aux = new Gamepad("Operator", HW.USBPORT_1);
+	
 	//PDP Panel
 	public static PowerDistributionPanel PDP = new PowerDistributionPanel();
+	
     /**PDP Slots**/
 	public static final int LEFT_DRIVE_MOTOR_0_PDP = 0;
 	public static final int LEFT_DRIVE_MOTOR_1_PDP = 1;

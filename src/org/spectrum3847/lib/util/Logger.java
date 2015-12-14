@@ -1,149 +1,142 @@
 package org.spectrum3847.lib.util;
-
-import edu.wpi.first.wpilibj.Timer;
-
+ 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.stream.Collectors;
+import java.util.Date;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+/**
+ * 
+ * @author  Based on 1114 - 2015 code
+ */
 public class Logger {
-
-    public static final double WRITE_TIME = 0.5; // Write every .5 seconds
-
-    private static Logger inst = null;
-
-    protected File logFile = null;
+   
     private BufferedWriter writer;
-    private ArrayBlockingQueue<String> logMessages = new ArrayBlockingQueue<String>(
-            300);
-    Thread consumer;
-
+    private boolean logging =false; 
+    private final String loggerBoolean = "Logging";
+    private static Logger instance;
+    private String fileName ="";
+    private final String SDFileName = "File Name: ";
+    DriverStation ds;
+    
+    private int max = 0;
+    
+    private String path;
+    
     public static Logger getInstance() {
-        if (inst == null) {
-            inst = new Logger();
+        if(instance == null) {
+            instance = new Logger();
         }
-        return inst;
+        return instance;
     }
-
-    Runnable consumerTask = new Runnable() {
-        public void run() {
-            double lastWriteTime = Timer.getFPGATimestamp();
-            while (true) {
-                try {
-                    String msg = logMessages.take();
-                    writer.write(msg);
-                    if (Timer.getFPGATimestamp() >= lastWriteTime + WRITE_TIME) {
-                        writer.flush();
-                        lastWriteTime = Timer.getFPGATimestamp();
-                    }
-                } catch (InterruptedException | IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    };
-
+ 
     private Logger() {
-        File baseDrive = determineMountPoint();
-        if (baseDrive != null) {
-            File logDir = new File(baseDrive, "logs");
-            if (!logDir.exists()) {
-                logDir.mkdirs();
-            }
-
-            File lastBoot = getLastBootLogFile();
-            int number = 0;
-            if (lastBoot != null) {
-                String name = lastBoot.getName();
-                String numberStr = name.substring(0, name.lastIndexOf('.'));
-                number = Integer.parseInt(numberStr);
-            }
-            logFile = new File(logDir, String.format("%04d.log", number + 1));
-            try {
-                writer = new BufferedWriter(new OutputStreamWriter(
-                        new FileOutputStream(logFile), "utf-8"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            consumer = new Thread(consumerTask);
-            consumer.setName("Logger");
-            consumer.setPriority(Thread.MIN_PRIORITY);
-            consumer.start();
+        this.ds = DriverStation.getInstance();
+        SmartDashboard.putBoolean(this.loggerBoolean, this.logging);
+        this.logging= SmartDashboard.getBoolean(this.loggerBoolean);
+        SmartDashboard.putString(this.SDFileName, this.fileName);
+        this.fileName = SmartDashboard.getString(SDFileName);
+        File f = new File("/logs");
+        if(!f.exists()) {
+        	f.mkdir();
         }
-
+        
+    	File[] files = new File("/logs").listFiles();
+    	if(files != null) {
+	        for(File file : files) {
+	            if(file.isFile()) {
+	                System.out.println(file.getName());
+	                try {
+	                    int index = Integer.parseInt(file.getName().split("_")[0]);
+	                    if(index > max) {
+	                        max = index;
+	                    }
+	                } catch (Exception e){
+	                    e.printStackTrace();
+	                }
+	            }
+	        }
+    	} else {
+    		max = 0;
+    	}
     }
-
-    protected static File determineMountPoint() {
-        char iter = 'z';
-        for (int i = 0; i < 6; i++) {
-            File f = new File("/" + iter);
-            if (f.exists() && f.isDirectory()) {
-                return f;
-            }
-            iter--;
-        }
-        return null;
+	    
+    public void openFile() {
+    	if(this.wantToLog() || this.ds.isFMSAttached()){
+	        try{
+	            path = this.getPath();
+	            this.writer = new BufferedWriter(new FileWriter(path));
+	            this.writer.write("time,leftOut,rightOut,backOut,leftSpeed,rightSpeed,backSpeed,xPosition,yPosition,batteryVolt,leftCurrent1,leftCurrent2,rightCurrent1,rightCurrent2,backCurrent1,backCurrent2");
+	            this.writer.newLine();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+    	}
     }
-
-    public static File getLogDirectory() {
-        File baseDrive = determineMountPoint();
-        if (baseDrive == null) {
-            return null;
-        }
-        return new File(baseDrive, "logs");
-    }
-
-    public static File getLastBootLogFile() {
-        List<String> fileNames = getAllLogFiles().stream()
-                .map(File::getName).collect(Collectors.toList());
-        fileNames.sort(null);
-        if (fileNames.size() <= 0)
-            return null;
-        String lastFileName = fileNames.get(fileNames.size() - 1);
-        return new File(getLogDirectory(), lastFileName);
-    }
-
-    public static Collection<File> getAllLogFiles() {
-        FilenameFilter logFilter = new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                String lowercaseName = name.toLowerCase();
-                return lowercaseName.matches("\\d\\d\\d\\d.log");
-            }
-        };
-        File logDir = getLogDirectory();
-        File[] files = logDir.listFiles(logFilter);
-        if (files == null) {
-            return new ArrayList<File>();
-        } else {
-            return Arrays.asList(files);
+    
+    private String getPath() {
+    	this.fileName = SmartDashboard.getString(SDFileName);
+        if(this.ds.isFMSAttached()) {
+            return String.format("/logs/%d_%s_%d_log.txt", ++this.max, this.ds.getAlliance().name(), this.ds.getLocation());
+        }else if(this.fileName != null){ 
+        	return String.format("/logs/%d_%s.txt",++this.max,this.fileName);
+        }else {
+            return String.format("/logs/%d_log.txt", ++this.max);
         }
     }
-
-    protected File getCurrentLogFile() {
-        return logFile;
+   
+    public void logAll() {
+    	if(this.wantToLog()){
+	        try {
+	        	
+	        	/*
+	            this.writer.write(String.format("%d", new java.util.Date().getTime()));
+	            this.writer.write(String.format(",%.3f", this.robotOut.getDriveLeft()));
+	            this.writer.write(String.format(",%.3f", this.robotOut.getDriveRight()));
+	            this.writer.write(String.format(",%.3f", this.robotOut.getDriveBack()));
+	            
+	            this.writer.write(String.format(",%d", this.sensorIn.getEncoderLeftSpeed()));
+	            this.writer.write(String.format(",%d", this.sensorIn.getEncoderRightSpeed()));
+	            this.writer.write(String.format(",%d",this.sensorIn.getEncoderBackSpeed()));
+	            
+	            this.writer.write(String.format(",%.3f",this.sensorIn.getXPosition()));
+	            this.writer.write(String.format(",%.3f",this.sensorIn.getYPosition()));
+	            
+	            
+	            this.writer.write(String.format(",%.3f", this.sensorIn.getVoltage()));
+	            this.writer.write(String.format(",%.3f", this.sensorIn.getCurrent(0)));
+	            this.writer.write(String.format(",%.3f", this.sensorIn.getCurrent(1)));
+	            this.writer.write(String.format(",%.3f", this.sensorIn.getCurrent(2)));
+	            this.writer.write(String.format(",%.3f", this.sensorIn.getCurrent(12)));
+	            this.writer.write(String.format(",%.3f", this.sensorIn.getCurrent(13)));
+	            this.writer.write(String.format(",%.3f", this.sensorIn.getCurrent(14)));
+	            */
+	            
+	            
+	            this.writer.newLine();
+	        }
+	        catch (IOException e) {
+	            e.printStackTrace();
+	        }
+    	}
     }
-
-    public static File getLogFile() {
-        return getInstance().getCurrentLogFile();
+    
+    public boolean wantToLog(){
+    	this.logging= SmartDashboard.getBoolean(this.loggerBoolean);
+    	return this.logging;
     }
-
-    private boolean printLocal(String s) {
-        return logMessages.offer(s);
-    }
-
-    public static boolean print(String s) {
-        return getInstance().printLocal(s);
-    }
-
-    private boolean printlnLocal(String s) {
-        return logMessages.offer(s + '\n');
-    }
-
-    public static boolean println(String s) {
-        return getInstance().printlnLocal(s);
+    
+    
+    public void close() {
+    	if(this.wantToLog()){
+	    	if(this.writer != null) {
+	            try {
+	                this.writer.close();
+	            }
+	            catch (IOException e) {
+	                e.printStackTrace();
+	            }
+	    	}
+    	}
     }
 }

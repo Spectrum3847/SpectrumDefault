@@ -1,8 +1,8 @@
 package org.spectrum3847.robot;
 
 import org.spectrum3847.lib.drivers.Gamepad;
+import org.spectrum3847.robot.commands.SolenoidCommand;
 
-import edu.wpi.first.wpilibj.buttons.Button;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -22,7 +22,7 @@ public class OI {
     
     //// TRIGGERING COMMANDS WITH BUTTONS
     // Once you have a button, it's trivial to bind it to a button in one of
-    // three ways:
+    // four ways:
     
     // Start the command when the button is pressed and let it run the command
     // until it is finished as determined by it's isFinished method.
@@ -35,11 +35,17 @@ public class OI {
     // Start the command when the button is released  and let it run the command
     // until it is finished as determined by it's isFinished method.
     // button.whenReleased(new ExampleCommand());
-	public static final Gamepad gamepad = new Gamepad(HW.USBPORT_0);
-    public static final Gamepad gamepad_aux = new Gamepad(HW.USBPORT_1);
+	
+	// Toggle a command when the button is pushed each time, on, off, on, off, etc
+	// button.toggleWhenPressed(new ExampleCommand());
 
     //Use this constructor to setup up button schedulers for commands
     public OI() {
+    	//Driver
+    	HW.Driver_Gamepad.getButton(Gamepad.A_BUTTON).toggleWhenPressed(
+    								new SolenoidCommand("0 & 1 Extend",
+    								Robot.sol_0_1,
+    								true));
     	
     }
 }

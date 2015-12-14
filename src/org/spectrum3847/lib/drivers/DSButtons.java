@@ -1,6 +1,8 @@
 package org.spectrum3847.lib.drivers;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * Used to connect TI Launchpad Buttons on the Spectrum 2016 Driver Station
@@ -21,24 +23,38 @@ public class DSButtons extends Joystick {
 	 * @param button - which button number 0-4
 	 * @return the button state
 	 */	
-	public boolean getDriverButton(int button){
+	public boolean getDriverButtonVal(int button){
 		button = (button > 4) ? 4 : button;
 		button = (button < 0) ? 0 : button;
 		
 		return this.getRawButton(1 + button);
 	}
 	
+    public Button getDriverButton(int button){
+		button = (button > 4) ? 4 : button;
+		button = (button < 0) ? 0 : button;
+		
+    	return new JoystickButton(this, button);
+    }
+	
 	/**
 	 * @param button - which button number 0-4
 	 * @return the button state
 	 */
-	public boolean getOperatorButton(int button){
+	public boolean getOperatorButtonVal(int button){
 		button = (button > 4) ? 4 : button;
 		button = (button < 0) ? 0 : button;
 		
 		return this.getRawButton(6 + button);
 	}	
-
+	
+    public Button getOperatorButton(int button){
+		button = (button > 4) ? 4 : button;
+		button = (button < 0) ? 0 : button;
+		
+    	return new JoystickButton(this, 6 + button);
+    }
+    
 	/**
 	 * @param LED - 0 to 4 for the driver LEDS
 	 * @param value
