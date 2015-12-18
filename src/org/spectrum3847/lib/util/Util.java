@@ -2,6 +2,8 @@ package org.spectrum3847.lib.util;
 
 import java.util.List;
 
+import edu.wpi.first.wpilibj.Timer;
+
 /**
  * Contains basic functions that are used often.
  *
@@ -42,6 +44,10 @@ public class Util {
             }
         }
         return sb.toString();
+    }
+    
+    public static double getTime(){
+    	return Timer.getFPGATimestamp();
     }
 
 }
