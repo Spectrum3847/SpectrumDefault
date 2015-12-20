@@ -1,6 +1,7 @@
 package org.spectrum3847.robot;
 
 import org.spectrum3847.lib.drivers.Gamepad;
+import org.spectrum3847.robot.commands.CANRunAtSetpoint;
 import org.spectrum3847.robot.commands.SolenoidCommand;
 
 
@@ -46,6 +47,9 @@ public class OI {
     								new SolenoidCommand("0 & 1 Extend",
     								Robot.sol_0_1,
     								true));
+    	HW.Operator_Gamepad.getButton(Gamepad.A_BUTTON).toggleWhenPressed(
+    								new CANRunAtSetpoint("Shooter at Setpoint PID",
+    								Robot.shooter));	
     	
     }
 }

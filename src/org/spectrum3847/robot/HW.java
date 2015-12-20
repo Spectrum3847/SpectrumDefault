@@ -20,7 +20,7 @@ public class HW {
 	//OI
 	public static OI oi;
 	public static final Gamepad Driver_Gamepad = new Gamepad("Driver", HW.USBPORT_0);
-    public static final Gamepad gamepad_aux = new Gamepad("Operator", HW.USBPORT_1);
+    public static final Gamepad Operator_Gamepad = new Gamepad("Operator", HW.USBPORT_1);
 	
 	//PDP Panel
 	public static PowerDistributionPanel PDP = new PowerDistributionPanel();
@@ -36,6 +36,8 @@ public class HW {
 	public static final int PWM_7_PDP = 7;
 	public static final int RIGHT_DRIVE_MOTOR_8_PDP = 8;
 	public static final int RIGHT_DRIVE_MOTOR_9_PDP = 9;
+	public static final int CAN_1_PDP = 10;
+	public static final int CAN_2_PDP = 11;
 	
 	
 	/**MOTOR ASSIGNMENTS (PWM)**/

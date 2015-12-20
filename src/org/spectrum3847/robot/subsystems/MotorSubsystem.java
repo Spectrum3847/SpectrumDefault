@@ -79,8 +79,12 @@ public class MotorSubsystem extends Subsystem {
 		currentLimit = true;
 	}
 	
-	public void enableCurrentLimit (boolean e){
-		currentLimit = e;
+	public void disableCurrentLimit(){
+		currentLimit = false;
+	}
+	
+	public void enableCurrentLimit (){
+		currentLimit = true;
 	}
 	
 	public double getSpeed(){

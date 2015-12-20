@@ -1,11 +1,14 @@
 
 package org.spectrum3847.robot;
 
+import org.spectrum3847.lib.drivers.Gamepad;
 import org.spectrum3847.lib.drivers.SpectrumEncoder;
 import org.spectrum3847.lib.util.Debugger;
+import org.spectrum3847.robot.commands.CANManualControl;
 import org.spectrum3847.robot.subsystems.Drive;
 import org.spectrum3847.robot.subsystems.MotorWithLimits;
 import org.spectrum3847.robot.subsystems.SolenoidSubsystem;
+import org.spectrum3847.robot.subsystems.SpeedCANSubsystem;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -37,6 +40,7 @@ public class Robot extends IterativeRobot {
 	public static Drive drive; 
 	public static MotorWithLimits motor3;
 	public static SolenoidSubsystem sol_0_1;
+	public static SpeedCANSubsystem shooter;
 	
     public static void setupSubsystems(){
     	drive = new Drive("defaultDrive", 
@@ -49,8 +53,10 @@ public class Robot extends IterativeRobot {
     	motor3 = new MotorWithLimits("Motor 3", HW.PWM_3, HW.PWM_3_PDP, HW.DIGITAL_IO_4, HW.DIGITAL_IO_5);
     	
     	//Setup a Solenoid Subsystem and give it an initial state
-    	sol_0_1 = new SolenoidSubsystem("Solenoid - 0 & 1", 0, 1);
+    	sol_0_1 = new SolenoidSubsystem("Solenoid - 0 & 1", HW.SOL_0, HW.SOL_1);
     	sol_0_1.retract();
+    	shooter = new SpeedCANSubsystem("Shooter", HW.CAN_MOTOR_1, HW.CAN_1_PDP);
+    	shooter.defaultCommand(new CANManualControl(shooter, HW.Operator_Gamepad, Gamepad.LeftY)); //This established a manual control default mode for the shooter wheel
     }
     
     //Used to keep track of the robot current state easily
@@ -90,7 +96,6 @@ public class Robot extends IterativeRobot {
     	Debugger.flagOn(commands);
     }
 
-    
     /**
      * This function is called when the disabled button is hit.
      * You can use it to reset subsystems before shutting down.
