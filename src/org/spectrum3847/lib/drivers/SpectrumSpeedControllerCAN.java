@@ -1,6 +1,8 @@
 package org.spectrum3847.lib.drivers;
 
+import org.spectrum3847.lib.util.Debugger;
 import org.spectrum3847.robot.HW;
+import org.spectrum3847.robot.Robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.SpeedController;
@@ -15,6 +17,7 @@ public class SpectrumSpeedControllerCAN implements SpeedController {
 	public SpectrumSpeedControllerCAN(CANTalon controller, int pdp_slot) {
         m_controllers = new CANTalon[]{controller};
         m_pdp_slots = new int[]{pdp_slot};
+        name = "first";
 	}
 
 	public SpectrumSpeedControllerCAN(int controller, int pdp_slot) {
@@ -28,6 +31,7 @@ public class SpectrumSpeedControllerCAN implements SpeedController {
             m_controllers[i].changeControlMode(CANTalon.ControlMode.Follower);
             m_controllers[i].set(m_controllers[0].getDeviceID());
         }
+        name = "second";
 	}
 	
 	public void setName(String n){
@@ -83,7 +87,13 @@ public class SpectrumSpeedControllerCAN implements SpeedController {
 
 	@Override
 	public void disable() {
-		m_controllers[0].disable();
+		m_controllers[0].disableControl();
+	    Debugger.println("CAN Talon: " + getTalon().getDeviceID() + ": Disabled Control", Robot.output, Debugger.info3  );
+	}
+	
+	public void enable(){
+		m_controllers[0].enableControl();
+	    Debugger.println("CAN Talon: " + getTalon().getDeviceID() + ": Enabled Control", Robot.output, Debugger.info3  );
 	}
 	
 	public CANTalon getTalon(){

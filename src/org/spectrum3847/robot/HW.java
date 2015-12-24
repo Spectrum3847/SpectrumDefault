@@ -36,7 +36,7 @@ public class HW {
 	public static final int PWM_7_PDP = 7;
 	public static final int RIGHT_DRIVE_MOTOR_8_PDP = 8;
 	public static final int RIGHT_DRIVE_MOTOR_9_PDP = 9;
-	public static final int CAN_1_PDP = 10;
+	public static final int SHOOTER_CAN_1_PDP = 1;
 	public static final int CAN_2_PDP = 11;
 	
 	
@@ -64,7 +64,7 @@ public class HW {
 
 
     /**NON-DRIVEBASE MOTOR ASSIGNMENTS (CAN)**/
-    public static final int CAN_MOTOR_1 = 1;
+    public static final int SHOTOR_MOTOR_2 = 2;
     public static final int CAN_MOTOR_2 = 2;
     public static final int CAN_MOTOR_3 = 3;
     public static final int CAN_MOTOR_4 = 4;

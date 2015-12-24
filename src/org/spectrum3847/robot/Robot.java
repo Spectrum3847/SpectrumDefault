@@ -10,6 +10,7 @@ import org.spectrum3847.robot.subsystems.MotorWithLimits;
 import org.spectrum3847.robot.subsystems.SolenoidSubsystem;
 import org.spectrum3847.robot.subsystems.SpeedCANSubsystem;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
@@ -37,12 +38,15 @@ public class Robot extends IterativeRobot {
     // which commands extend), subsystems are not guaranteed to be
     // yet. Thus, their requires() statements may grab null pointers. Bad
     // news. Don't move it.
+	
 	public static Drive drive; 
 	public static MotorWithLimits motor3;
 	public static SolenoidSubsystem sol_0_1;
 	public static SpeedCANSubsystem shooter;
+	public static Compressor compressor;
 	
     public static void setupSubsystems(){
+    	compressor = new Compressor(0);
     	drive = new Drive("defaultDrive", 
     						HW.LEFT_DRIVE_MOTOR_0, HW.LEFT_DRIVE_MOTOR_0_PDP, 
     						HW.RIGHT_DRIVE_MOTOR_9, HW.RIGHT_DRIVE_MOTOR_9_PDP, 
@@ -55,7 +59,7 @@ public class Robot extends IterativeRobot {
     	//Setup a Solenoid Subsystem and give it an initial state
     	sol_0_1 = new SolenoidSubsystem("Solenoid - 0 & 1", HW.SOL_0, HW.SOL_1);
     	sol_0_1.retract();
-    	shooter = new SpeedCANSubsystem("Shooter", HW.CAN_MOTOR_1, HW.CAN_1_PDP);
+    	shooter = new SpeedCANSubsystem("Shooter", HW.SHOTOR_MOTOR_2, HW.SHOOTER_CAN_1_PDP);
     	shooter.defaultCommand(new CANManualControl(shooter, HW.Operator_Gamepad, Gamepad.LeftY)); //This established a manual control default mode for the shooter wheel
     }
     
@@ -78,10 +82,10 @@ public class Robot extends IterativeRobot {
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-    public void init() {
+    public void robotInit() {
     	initDebugger();
     	printGeneralInfo("Start robotInit()");
-		setupSubsystems(); //This has to be before the OI is created on the next line
+    	setupSubsystems(); //This has to be before the OI is created on the next line
 		HW.oi = new OI();
         Dashboard.intializeDashboard();
     }
@@ -95,7 +99,17 @@ public class Robot extends IterativeRobot {
     	Debugger.flagOn(auton);
     	Debugger.flagOn(commands);
     }
-
+    /**
+     * Initialization code for test mode should go here.
+     *
+     * Users should override this method for initialization code which will be called each time
+     * the robot enters test mode.
+     */
+    public void testInit() {
+    	compressor.startLiveWindowMode();
+    	compressor.setClosedLoopControl(false);
+    }
+    
     /**
      * This function is called when the disabled button is hit.
      * You can use it to reset subsystems before shutting down.

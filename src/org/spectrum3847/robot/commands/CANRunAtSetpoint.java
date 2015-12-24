@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class CANRunAtSetpoint extends Command {
+public class CANRunAtSetpoint extends Command{
 
 	private SpeedCANSubsystem subsystem;
 	private String m_name;
@@ -31,6 +31,7 @@ public class CANRunAtSetpoint extends Command {
     	}
     	subsystem.updatePIDFromDashboard();
     	subsystem.enable();
+    	subsystem.getTalon().setPosition(0);
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -53,4 +54,5 @@ public class CANRunAtSetpoint extends Command {
     protected void interrupted() {
     	end();
     }
+
 }

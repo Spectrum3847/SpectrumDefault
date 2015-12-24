@@ -44,6 +44,7 @@ public class SpeedCANSubsystem extends CANMotorSubsystem {
 	public void setupForManual(){
 		this.getTalon().changeControlMode(CANTalon.ControlMode.PercentVbus);
 		m_speedMode = false;
+		this.enable();
 	}
 	
 	public boolean isSpeedMode(){
@@ -74,6 +75,7 @@ public class SpeedCANSubsystem extends CANMotorSubsystem {
 		SmartDashboard.putNumber(this.getName() + " Error:", this.getTalon().getClosedLoopError());
 		SmartDashboard.putNumber(this.getName() + " OutputVoltage:", this.getTalon().getOutputVoltage());
 		SmartDashboard.putNumber(this.getName() + " OutputCurrent:", this.getTalon().getOutputCurrent());
+		SmartDashboard.putNumber(this.getName() + " Position:", this.getTalon().getPosition());
 	}
 	
 	/**
