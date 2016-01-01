@@ -43,15 +43,21 @@ public class OI {
     //Use this constructor to setup up button schedulers for commands
     public OI() {
     	//Driver
-    	/*HW.Driver_Gamepad.getButton(Gamepad.A_BUTTON).toggleWhenPressed(
+    	/*
+    	HW.Driver_Gamepad.getButton(Gamepad.A_BUTTON).toggleWhenPressed(
     								new SolenoidCommand("0 & 1 Extend",
     								Robot.sol_0_1,
     								true));
-    	*/
+    	
     	HW.Operator_Gamepad.getButton(Gamepad.A_BUTTON).toggleWhenPressed(
     								new CANRunAtSetpoint("Shooter at Setpoint PID",
-    								Robot.shooter));	
+    								Robot.shooter));
     	
+    	HW.Operator_Gamepad.getButton(Gamepad.Y_BUTTON).whileHeld(
+    								new SolenoidCommand("Can Grabber Down",
+    								Robot.canGrabber,
+    								true));
+    	*/
     }
 }
 

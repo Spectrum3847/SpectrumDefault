@@ -5,6 +5,6 @@
 	<classpathentry kind="var" path="networktables" sourcepath="networktables.sources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/JAG/navx-mxp/java/lib/navx_frc.jar"/>
-	<classpathentry kind="lib" path="D:/Spectrum Code/usb4Java/src/commons-lang3-3.4/commons-lang3-3.4.jar" sourcepath="D:/Spectrum Code/usb4Java/src/commons-lang3-3.4/commons-lang3-3.4-javadoc.jar"/>
+	<classpathentry kind="lib" path="external/commons-lang3-3.2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

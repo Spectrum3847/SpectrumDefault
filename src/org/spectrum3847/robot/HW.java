@@ -84,7 +84,7 @@ public class HW {
     public static final int SOL_0 = 0;
     public static final int SOL_1 = 1;
     public static final int SOL_2 = 2;
-    public static final int SOL_3 = 3;
+    public static final int CAN_GRABBER_SOL_3 = 3;
     public static final int SOL_4 = 4;
     public static final int SOL_5 = 5;
     public static final int SOL_6 = 6;

@@ -44,6 +44,7 @@ public class Robot extends IterativeRobot {
 	public static SolenoidSubsystem sol_0_1;
 	public static SpeedCANSubsystem shooter;
 	public static Compressor compressor;
+	public static SolenoidSubsystem canGrabber;
 	
     public static void setupSubsystems(){
     	compressor = new Compressor(0);
@@ -61,6 +62,8 @@ public class Robot extends IterativeRobot {
     	sol_0_1.retract();
     	shooter = new SpeedCANSubsystem("Shooter", HW.SHOTOR_MOTOR_2, HW.SHOOTER_CAN_1_PDP);
     	shooter.defaultCommand(new CANManualControl(shooter, HW.Operator_Gamepad, Gamepad.LeftY)); //This established a manual control default mode for the shooter wheel
+    	canGrabber = new SolenoidSubsystem("Can Grabber", HW.SOL_2, HW.CAN_GRABBER_SOL_3);
+    	canGrabber.retract();
     }
     
     //Used to keep track of the robot current state easily

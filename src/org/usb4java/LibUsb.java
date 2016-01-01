@@ -645,7 +645,7 @@ public final class LibUsb
 
     static
     {
-        Loader.load();
+        System.load("/libusb4java.so");//Loader.load();
     }
 
     /**

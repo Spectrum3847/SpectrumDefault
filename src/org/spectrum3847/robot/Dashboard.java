@@ -28,7 +28,7 @@ public class Dashboard {
 
     private static void updatePutShort() {
     	//SmartDashboard.putNumber("Motor 1", Motor_1.get());
-    	Robot.shooter.updateValuesToDashboard();;
+    	Robot.shooter.updateValuesToDashboard();
     }
     
     private static void updatePutLong(){

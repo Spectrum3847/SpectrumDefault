@@ -1,5 +1,6 @@
 package org.spectrum3847.lib.util;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -48,6 +49,12 @@ public class Util {
     
     public static double getTime(){
     	return Timer.getFPGATimestamp();
+    }
+    
+    public static ByteBuffer stringToByteBuffer(String s){
+    	ByteBuffer buffer = ByteBuffer.allocateDirect(s.getBytes().length);
+        buffer.put(s.getBytes());
+        return buffer;
     }
 
 }

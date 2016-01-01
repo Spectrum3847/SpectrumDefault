@@ -268,7 +268,7 @@ public final class Loader
         // Extract the usb4java library
         final String source = '/'
             + Loader.class.getPackage().getName().replace('.', '/') + '/'
-            + platform + "/" + lib;
+            + "linux-arm" + "/" + "libusb4java.so";
 
         // Check if native library is present
         final URL url = Loader.class.getResource(source);
