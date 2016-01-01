@@ -16,8 +16,8 @@ public class AndroidAccessory {
 private static int IN = 0x85;
 private static int OUT = 0x07;
 
-private static int VID = 0x18D1;
-private static int PID = 0x4E22;
+private static int VID = 0x22b8;
+private static int PID = 0x2e76;
 
 private static int ACCESSORY_PID = 0x2D01;
 private static int ACCESSORY_PID_ALT = 0x2D00;
@@ -40,28 +40,33 @@ static char success = 0;
 public static int main (){
 	Debugger.println("STARTING ANDROID MAIN", Robot.general, Debugger.error5);
 	if(init() < 0){
-		Debugger.println("Failed to Init USB");
+		Debugger.println("Failed to Init USB", Robot.general, Debugger.error5);
 		return 0;
 	}
+	Debugger.println("ANDROID FINISHED INIT", Robot.general, Debugger.error5);
+	
 	//doTransfer();
 	if(setupAccessory(
 			"Manufacturer",
 			"Model",
 			"Description",
 			"VersionName",
-			"http://neuxs-computing.ch",
+			"http://Spectrum3847.org/RIOdroid",
 			"2254711SerialNo.") < 0){
-		Debugger.println("Error setting up accessory\n");
+		Debugger.println("Error setting up accessory\n", Robot.general, Debugger.error5);
 		deInit();
 		return -1;
 	};
+	
+	Debugger.println("ANDROID FINISHED SETUP", Robot.general, Debugger.error5);
+	
 	if(mainPhase() < 0){
-		Debugger.println("Error during main phase\n");
+		Debugger.println("Error during main phase\n", Robot.general, Debugger.error5);
 		deInit();
 		return -1;
 	}	
 	deInit();
-	Debugger.println("Done, no errors\n");
+	Debugger.println("Done, no errors\n", Robot.general, Debugger.error5);
 	return 0;
 }
 
@@ -82,7 +87,7 @@ static int mainPhase(){
 static int init(){
 	LibUsb.init(null);
 	if((handle = LibUsb.openDeviceWithVidPid(null, (short)VID, (short)PID)) == null){
-		Debugger.println("Problem acquireing handle");
+		Debugger.println("Problem acquireing handle", Robot.general, Debugger.error5);
 		return -1;
 	}
 	LibUsb.claimInterface(handle, 0);
@@ -124,7 +129,7 @@ static int setupAccessory(
 
 	if(response < 0){error(response);return-1;}
 	devVersion = ioBuffer.get(1) << 8 | ioBuffer.get(0);
-	Debugger.println("Verion Code Device: %d");
+	Debugger.println("Verion Code Device: %d", Robot.general, Debugger.error5);
 	
 	//May have to put back in a short pause
 	//usleep(1000);//sometimes hangs on the next transfer :(
@@ -142,12 +147,12 @@ static int setupAccessory(
 	response = LibUsb.controlTransfer(handle,(byte) 0x40,(byte) 52,(short) 0,(short) 5,Util.stringToByteBuffer(serialNumber),0);
 	if(response < 0){error(response);return -1;}
 
-	Debugger.println("Accessory Identification sent\n");
+	Debugger.println("Accessory Identification sent\n", Robot.general, Debugger.error5);
 
-	response = LibUsb.controlTransfer(handle,(byte) 0x40,(byte) 53,(short)0,(short)0,null,0);
+	response = LibUsb.controlTransfer(handle,(byte) 0x40,(byte) 53,(short)0,(short)0,Util.stringToByteBuffer(" "),0);
 	if(response < 0){error(response);return -1;}
 
-	Debugger.println("Attempted to put device into accessory mode\n");
+	Debugger.println("Attempted to put device into accessory mode\n", Robot.general, Debugger.error5);
 
 	if(handle != null)
 		LibUsb.releaseInterface (handle, 0);

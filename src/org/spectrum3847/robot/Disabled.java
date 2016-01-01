@@ -20,7 +20,7 @@ import se.vidstige.jadb.JadbException;
 import org.spectrum3847.lib.drivers.AndroidAccessory;
 
 /**
- * @author matthew
+ * @author Spectrum
  */
 public class Disabled {
 
@@ -31,16 +31,17 @@ public class Disabled {
         Scheduler.getInstance().removeAll();
         //Init.sendCam.start();
        //adbStuff();
-       //AndroidAccessory.main();
-        usb4javsStuff();
+       AndroidAccessory.main();
+       // usb4javsStuff();
     }
     
     public static void usb4javsStuff(){
     	Context context = new Context();
         int result = LibUsb.init(context);
+        Debugger.println("LibUSB Init Complete", Robot.general, Debugger.error5);
         if (result != LibUsb.SUCCESS) throw new LibUsbException("Unable to initialize libusb.", result);
         Device motoE = findDevice((short)0x22b8, (short) 0x2e76); //Product Vendor and ID for 2015 Moto E I'm using to Test
-        Debugger.println(LibUsb.getDeviceAddress(motoE));
+        Debugger.println("Moto E Device: " + LibUsb.getDeviceAddress(motoE), Robot.general, Debugger.error5);
     }
     
     public static Device findDevice(short vendorId, short productId)
@@ -50,6 +51,8 @@ public class Disabled {
         int result = LibUsb.getDeviceList(null, list);
         if (result < 0) throw new LibUsbException("Unable to get device list", result);
 
+        Debugger.println("DEVICE LIST COMPLETE", Robot.general, Debugger.error5);
+       
         try
         {
             // Iterate over all devices and scan for the right one

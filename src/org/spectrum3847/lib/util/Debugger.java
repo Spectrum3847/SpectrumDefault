@@ -30,8 +30,8 @@ public class Debugger {
     
     static {
         currFlags = new ArrayList<>();
-        currLevel = 7;
-        defaultOn = false;
+        currLevel = 1;
+        defaultOn = true;
     }
     
     public static void println(String msg) {
@@ -54,7 +54,7 @@ public class Debugger {
         }
         
         if (level >= error5){
-        	writeToDS(msg);
+        	writeToDS(msg +"\n");
         }
     }
     
