@@ -22,7 +22,10 @@ public class ShooterOn extends Command{
 	private double rear_speed;
 	
 	public void ShooterON(){
-		requires(Robot.ShooterWheel);
+		requires(Robot.shooterWheelFrontTilt);
+		requires(Robot.shooterWheelFrontFlat);
+		requires(Robot.shooterWheelMiddle);
+		requires(Robot.shooterWheelRear);
 	}
 	
 	//called before first run
@@ -58,3 +61,4 @@ public class ShooterOn extends Command{
 		// TODO Auto-generated method stub
 		
 	}
+}
