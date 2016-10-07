@@ -4,15 +4,20 @@ package org.spectrum3847.robot;
 import org.spectrum3847.lib.drivers.Gamepad;
 import org.spectrum3847.lib.drivers.SpectrumEncoder;
 import org.spectrum3847.lib.drivers.SpectrumSpeedController;
+import org.spectrum3847.lib.drivers.SpectrumSpeedControllerCAN;
 import org.spectrum3847.lib.util.Debugger;
 import org.spectrum3847.robot.commands.CANManualControl;
 import org.spectrum3847.robot.subsystems.Drive;
 import org.spectrum3847.robot.subsystems.MotorWithLimits;
+import org.spectrum3847.robot.subsystems.ShooterWheel;
 import org.spectrum3847.robot.subsystems.SolenoidSubsystem;
 import org.spectrum3847.robot.subsystems.SpeedCANSubsystem;
 
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
@@ -42,32 +47,122 @@ public class Robot extends IterativeRobot {
 	
 	public static SpectrumSpeedController rightDrive;
 	public static SpectrumSpeedController leftDrive;
+	public static SpectrumSpeedControllerCAN shooterFrontTilt;
+	public static SpectrumSpeedControllerCAN shooterFrontFlat;
+	public static SpectrumSpeedControllerCAN shooterMiddle;
+	public static SpectrumSpeedControllerCAN shooterRear;
 	public static Drive drive; 
-	
 	public static MotorWithLimits motor3;
 	public static SolenoidSubsystem sol_0_1;
+	public static SpeedCANSubsystem shooter;
 	public static Compressor compressor;
-
-	
+	public static ShooterWheel shooterWheelFrontTilt;
+	public static ShooterWheel shooterWheelFrontFlat;
+	public static ShooterWheel shooterWheelMiddle;
+	public static ShooterWheel shooterWheelRear;
 	
     public static void setupSubsystems(){
     	compressor = new Compressor(0);
-    	drive = new Drive("defaultDrive", 
-    						HW.LEFT_DRIVE_MOTOR_0, HW.LEFT_DRIVE_MOTOR_0_PDP, 
-    						HW.RIGHT_DRIVE_MOTOR_9, HW.RIGHT_DRIVE_MOTOR_9_PDP, 
-    						new SpectrumEncoder(0, 1, 240), new SpectrumEncoder(8,9, 240)
-    						);
     	
-    	//If used the HW elements should be refactor-renamed to avoid them being used in another part of the code.
-    	motor3 = new MotorWithLimits("Motor 3", HW.PWM_3, HW.PWM_3_PDP, HW.DIGITAL_IO_4, HW.DIGITAL_IO_5);
+    	
     	
     	//Setup a Solenoid Subsystem and give it an initial state
-    	sol_0_1 = new SolenoidSubsystem("Solenoid - 0 & 1", HW.SOL_0, HW.SOL_1);
-    	sol_0_1.retract();
-    	shooter = new SpeedCANSubsystem("Shooter", HW.SHOTOR_MOTOR_2, HW.SHOOTER_CAN_1_PDP);
-    	shooter.defaultCommand(new CANManualControl(shooter, HW.Operator_Gamepad, Gamepad.LeftY)); //This established a manual control default mode for the shooter wheel
-    }
+   
+    //Setup Drive Motor Speed Controllers
+    Spark LR_CIM = new Spark(HW.LEFT_REAR_DRIVE_MOTOR);
+    Spark LF_CIM = new Spark(HW.LEFT_FRONT_DRIVE_MOTOR);
+    Spark RR_CIM = new Spark(HW.RIGHT_REAR_DRIVE_MOTOR);
+    Spark RF_CIM = new Spark(HW.RIGHT_FRONT_DRIVE_MOTOR);
+
+    	
+    rightDrive = new SpectrumSpeedController(
+				new SpeedController[] {LR_CIM,LF_CIM}, 
+				new int[] {HW.LEFT_REAR_DRIVE_MOTOR_PDP, HW.LEFT_FRONT_DRIVE_MOTOR_PDP}
+			);
+	rightDrive.setInverted(true);
+	
+	leftDrive = new SpectrumSpeedController(
+			new SpeedController[] {RR_CIM, RF_CIM}, 
+			new int[] {HW.RIGHT_REAR_DRIVE_MOTOR_PDP, HW.RIGHT_FRONT_DRIVE_MOTOR_PDP}
+			);
+	leftDrive.setInverted(true);
+	
+	drive = new Drive("defaultDrive",
+						leftDrive, 
+						rightDrive,  
+						null, null
+						);
     
+	//Shooter Talons
+	CANTalon shooter_talon_front_tilted = new CANTalon(HW.SHOOTER_MOTOR_FRONT_TILT);
+	CANTalon shooter_talon_front_flat = new CANTalon(HW.SHOOTER_MOTOR_FRONT_FLAT);
+	CANTalon shooter_talon_middle_left = new CANTalon(HW.SHOOTER_MOTOR_MIDDLE_LEFT);
+	CANTalon shooter_talon_middle_right = new CANTalon(HW.SHOOTER_MOTOR_MIDDLE_RIGHT);
+	CANTalon shooter_talon_rear_left = new CANTalon(HW.SHOOTER_MOTOR_REAR_LEFT);
+	CANTalon shooter_talon_rear_right = new CANTalon(HW.SHOOTER_MOTOR_REAR_RIGHT);
+	
+	shooter_talon_front_tilted.changeControlMode(CANTalon.TalonControlMode.Speed);
+	shooter_talon_front_tilted.reverseSensor(true);
+	
+	shooter_talon_front_flat.changeControlMode(CANTalon.TalonControlMode.Speed);
+	shooter_talon_front_flat.reverseSensor(true);
+	
+	shooter_talon_middle_left.changeControlMode(CANTalon.TalonControlMode.Speed);
+	shooter_talon_middle_left.reverseSensor(true);
+	
+	shooter_talon_rear_left.changeControlMode(CANTalon.TalonControlMode.Speed);
+	shooter_talon_rear_left.reverseSensor(true);
+	
+	//ShooterWheels
+	shooterFrontTilt = new SpectrumSpeedControllerCAN(
+			shooter_talon_front_tilted, 
+			HW.SHOOTER_MOTOR_FRONT_TILT_PDP);
+    
+	shooterWheelFrontTilt = new ShooterWheel("Front Tilt",
+			shooterFrontTilt, null);
+	
+	
+	
+	shooterFrontFlat = new SpectrumSpeedControllerCAN(
+			shooter_talon_front_flat, 
+			HW.SHOOTER_MOTOR_FRONT_FLAT_PDP);
+
+	shooterWheelFrontFlat = new ShooterWheel("Front Flat",
+			shooterFrontFlat, null);
+	
+	
+	shooterMiddle = new SpectrumSpeedControllerCAN(
+			new CANTalon[] {shooter_talon_middle_left, shooter_talon_middle_right},
+			new int[] {HW.SHOOTER_MOTOR_MIDDLE_LEFT_PDP, HW.SHOOTER_MOTOR_MIDDLE_RIGHT_PDP}
+			);
+	
+	shooterWheelMiddle = new ShooterWheel("Middle",
+			shooterMiddle, null);
+	
+	shooter_talon_middle_right.changeControlMode(CANTalon.TalonControlMode.Follower);
+	shooter_talon_middle_right.set(shooter_talon_middle_left.getDeviceID());
+	shooter_talon_middle_right.ConfigFwdLimitSwitchNormallyOpen(true);
+	shooter_talon_middle_right.ConfigRevLimitSwitchNormallyOpen(true);
+	shooter_talon_middle_right.enableReverseSoftLimit(false);
+	shooter_talon_middle_right.enableForwardSoftLimit(false);
+	
+	shooterRear = new SpectrumSpeedControllerCAN(
+			new CANTalon[] {shooter_talon_rear_left, shooter_talon_rear_right},
+			new int[] {HW.SHOOTER_MOTOR_REAR_LEFT_PDP, HW.SHOOTER_MOTOR_REAR_RIGHT_PDP}
+			);
+    
+	shooterWheelRear = new ShooterWheel("Rear",
+			shooterRear, null);
+	
+	shooter_talon_rear_right.changeControlMode(CANTalon.TalonControlMode.Follower);
+	shooter_talon_rear_right.set(shooter_talon_middle_left.getDeviceID());
+	shooter_talon_rear_right.ConfigFwdLimitSwitchNormallyOpen(true);
+	shooter_talon_rear_right.ConfigRevLimitSwitchNormallyOpen(true);
+	shooter_talon_rear_right.enableReverseSoftLimit(false);
+	shooter_talon_rear_right.enableForwardSoftLimit(false);
+	
+    
+    }
     //Used to keep track of the robot current state easily
     public enum RobotState {
         DISABLED, AUTONOMOUS, TELEOP
