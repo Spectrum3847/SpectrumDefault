@@ -21,11 +21,11 @@ public class ShooterOn extends Command{
 	private double middle_speed;
 	private double rear_speed;
 	
-	public ShooterON(){
+	public void ShooterON(){
 		requires(Robot.ShooterWheel);
 	}
 	
-	//called before furst run
+	//called before first run
 	protected void initialize(){
 		tilt_speed = SmartDashboard.getNumber("Shooter PID Front Tilt Speed", 0);
 		flat_speed = SmartDashboard.getNumber("Shooter PID Front Flat Speed", 0);
@@ -34,4 +34,27 @@ public class ShooterOn extends Command{
 		
 		
 	}
-}
+
+	@Override
+	protected void execute() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected boolean isFinished() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	protected void end() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void interrupted() {
+		// TODO Auto-generated method stub
+		
+	}
