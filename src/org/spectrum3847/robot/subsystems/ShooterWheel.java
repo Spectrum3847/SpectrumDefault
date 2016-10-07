@@ -53,7 +53,7 @@ public class ShooterWheel extends Subsystem{
 			}
 		}
 		
-		m_left_motor.set(value);
+		m_motor.set(value);
 		Debugger.println("MOTOR - " + getName() + ": " + value, Robot.output, Debugger.debug2);
 	}
 	
@@ -86,23 +86,23 @@ public class ShooterWheel extends Subsystem{
 	}
 	
 	public double getSpeed(){
-		return m_left_motor.get();
+		return m_motor.get();
 	}
 	
 	public CANTalon getTalon(){
-		return m_left_motor.getTalon();
+		return m_motor.getTalon();
 	}
 	
 	public double getCurrent(){
-		return m_left_motor.getCurrent();
+		return m_motor.getCurrent();
 	}
 	
 	public void setInverted(boolean value){
-		m_left_motor.setInverted(value);
+		m_motor.setInverted(value);
 	}
 	
 	public void disable(){
-		m_left_motor.disable();
+		m_motor.disable();
 	}
 
 
