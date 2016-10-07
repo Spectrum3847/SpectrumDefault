@@ -15,15 +15,9 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class ShooterWheel extends Subsystem{
 
 	
-	public SpectrumSpeedControllerCAN m_left_motor;
-	public SpectrumSpeedControllerCAN m_right_motor;
+	public SpectrumSpeedControllerCAN m_motor;
 
-	
-	public Encoder m_only_encoder;
-	
-	public int m_right_PDP;
-	public int m_left_PDP;
-	
+
 	public SpectrumSolenoid carriage_solenoid;
 	
 	private double max = 1;
@@ -32,33 +26,12 @@ public class ShooterWheel extends Subsystem{
 	private double maxCurrentRev = -10000;
 	private boolean currentLimit = false;
 	
-	public ShooterWheel(String name, SpectrumSpeedControllerCAN right_motor, SpectrumSpeedControllerCAN left_motor,  
-			Encoder only_encoder,
-			int left_PDP, int right_PDP,
-			SpectrumSolenoid carriage){
-		
-		this.m_left_motor = left_motor;
-		this.m_right_motor = right_motor;
-		
-		this.m_only_encoder = only_encoder;
-	
-		this.m_right_PDP = right_PDP;
-		this.m_left_PDP = left_PDP;
-		
-		this.carriage_solenoid = carriage;
-	}
 
-	public ShooterWheel(String name, SpectrumSpeedControllerCAN only_motor,  
-			Encoder only_encoder,
-			int only_PDP,
+	public ShooterWheel(String name, SpectrumSpeedControllerCAN motor,  
 			SpectrumSolenoid carriage){
 		
-		this.m_left_motor = only_motor;
-		
-		this.m_only_encoder = only_encoder;
+		this.m_motor = motor;
 	
-		this.m_left_PDP = only_PDP;
-		
 		this.carriage_solenoid = carriage;
 	}
 	
