@@ -3,6 +3,7 @@ package org.spectrum3847.robot;
 
 import org.spectrum3847.lib.drivers.Gamepad;
 import org.spectrum3847.lib.drivers.SpectrumEncoder;
+import org.spectrum3847.lib.drivers.SpectrumSpeedController;
 import org.spectrum3847.lib.util.Debugger;
 import org.spectrum3847.robot.commands.CANManualControl;
 import org.spectrum3847.robot.subsystems.Drive;
@@ -39,11 +40,15 @@ public class Robot extends IterativeRobot {
     // yet. Thus, their requires() statements may grab null pointers. Bad
     // news. Don't move it.
 	
+	public static SpectrumSpeedController rightDrive;
+	public static SpectrumSpeedController leftDrive;
 	public static Drive drive; 
+	
 	public static MotorWithLimits motor3;
 	public static SolenoidSubsystem sol_0_1;
-	public static SpeedCANSubsystem shooter;
 	public static Compressor compressor;
+
+	
 	
     public static void setupSubsystems(){
     	compressor = new Compressor(0);

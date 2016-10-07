@@ -5,7 +5,9 @@ import org.spectrum3847.lib.drivers.SpectrumSpeedController;
 import org.spectrum3847.lib.trajectory.Path;
 import org.spectrum3847.lib.util.Pose;
 import org.spectrum3847.lib.util.StateHolder;
+import org.spectrum3847.lib.util.Util;
 import org.spectrum3847.robot.Constants;
+import org.spectrum3847.robot.HW;
 import org.spectrum3847.robot.subsystems.controllers.DriveFinishLineController;
 import org.spectrum3847.robot.subsystems.controllers.DrivePathController;
 import org.spectrum3847.robot.subsystems.controllers.DriveStraightController;
@@ -13,7 +15,11 @@ import org.spectrum3847.robot.subsystems.controllers.TurnInPlaceController;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.communication.UsageReporting;
+import edu.wpi.first.wpilibj.communication.FRCNetworkCommunicationsLibrary.tInstances;
+import edu.wpi.first.wpilibj.communication.FRCNetworkCommunicationsLibrary.tResourceType;
 
 public class Drive extends Subsystem {
 
@@ -58,9 +64,72 @@ public class Drive extends Subsystem {
     			left_encoder, right_encoder);
     }
 
+	public void defaultCommand(Command c){
+		setDefaultCommand(c);
+	}
+	
     public void setOpenLoop(DriveSignal signal) {
         m_controller = null;
         setDriveOutputs(signal);
+    }
+    
+    /**
+     * Arcade drive implements single stick driving. This function lets you
+     * directly provide joystick values from any source.
+     *$
+     * @param moveValue The value to use for forwards/backwards
+     * @param rotateValue The value to use for the rotate right/left
+     * @param squaredInputs If set, decreases the sensitivity at low speeds
+     */
+    public void arcadeDrive(double moveValue, double rotateValue, boolean squaredInputs) {
+      double leftMotorSpeed;
+      double rightMotorSpeed;
+
+      moveValue = Util.limit(moveValue, 1);
+      rotateValue = Util.limit(rotateValue, 1);
+      
+      if (Math.abs(moveValue) < 0.1){
+    	  moveValue = 0;
+      }
+      
+      if (Math.abs(rotateValue) < 0.1){
+    	  rotateValue = 0;
+      }
+
+      if (squaredInputs) {
+        // square the inputs (while preserving the sign) to increase fine control
+        // while permitting full power
+        if (moveValue >= 0.0) {
+          moveValue = (moveValue * moveValue);
+        } else {
+          moveValue = -(moveValue * moveValue);
+        }
+        if (rotateValue >= 0.0) {
+          rotateValue = (rotateValue * rotateValue);
+        } else {
+          rotateValue = -(rotateValue * rotateValue);
+        }
+      }
+      
+      if (moveValue > 0.0) {
+          if (rotateValue > 0.0) {
+            leftMotorSpeed = moveValue - rotateValue;
+            rightMotorSpeed = Math.max(moveValue, rotateValue);
+          } else {
+            leftMotorSpeed = Math.max(moveValue, -rotateValue);
+            rightMotorSpeed = moveValue + rotateValue;
+          }
+        } else {
+          if (rotateValue > 0.0) {
+            leftMotorSpeed = -Math.max(-moveValue, rotateValue);
+            rightMotorSpeed = moveValue + rotateValue;
+          } else {
+            leftMotorSpeed = moveValue - rotateValue;
+            rightMotorSpeed = -Math.max(-moveValue, -rotateValue);
+          }
+        }
+      
+        this.setOpenLoop(new DriveSignal(leftMotorSpeed, rightMotorSpeed));
     }
 
     public void setDistanceSetpoint(double distance) {
