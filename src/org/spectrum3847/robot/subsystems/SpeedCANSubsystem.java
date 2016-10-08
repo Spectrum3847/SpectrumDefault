@@ -37,12 +37,12 @@ public class SpeedCANSubsystem extends CANMotorSubsystem {
 	
 	public void setupForSpeed(){
 		this.getTalon().setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
-		this.getTalon().changeControlMode(CANTalon.ControlMode.Speed);
+		this.getTalon().changeControlMode(CANTalon.TalonControlMode.Speed);
 		m_speedMode = true;
 	}
 	
 	public void setupForManual(){
-		this.getTalon().changeControlMode(CANTalon.ControlMode.PercentVbus);
+		this.getTalon().changeControlMode(CANTalon.TalonControlMode.PercentVbus);
 		m_speedMode = false;
 		this.enable();
 	}
