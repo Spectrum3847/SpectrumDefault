@@ -87,4 +87,10 @@ public class SpectrumSpeedController implements SpeedController {
             controller.disable();
         }
     }
+
+	@Override
+	public void stopMotor() {
+		// TODO Auto-generated method stub
+		
+	}
 }
