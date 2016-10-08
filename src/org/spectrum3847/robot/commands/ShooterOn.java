@@ -2,16 +2,13 @@ package org.spectrum3847.robot.commands;
 
 import org.spectrum3847.lib.util.Debugger;
 import org.spectrum3847.robot.Robot;
+import org.spectrum3847.robot.subsystems.ShooterWheel;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ShooterOn extends Command{
-	private CANTalon tilt_motor;
-	private CANTalon flat_motor;
-	private CANTalon middle_motor;
-	private CANTalon rear_motor;
 	private double p = 0;
 	private double i = 0;
 	private double d = 0;
@@ -20,6 +17,7 @@ public class ShooterOn extends Command{
 	private double flat_speed;
 	private double middle_speed;
 	private double rear_speed;
+	
 	
 	public void ShooterON(){
 		requires(Robot.shooterWheelFrontTilt);
@@ -35,6 +33,23 @@ public class ShooterOn extends Command{
 		middle_speed = SmartDashboard.getNumber("Shooter PID Middle Speed", 0);
 		rear_speed = SmartDashboard.getNumber("Shooter PID Rear Speed", 0);
 		
+		Robot.shooterWheelFrontTilt.setPID(p, i, d, f, 0, 100, 0);
+		Robot.shooterWheelFrontTilt.set(tilt_speed);
+		
+		Robot.shooterWheelFrontFlat.setPID(p, i, d, f, 0, 100, 0);
+		Robot.shooterWheelFrontFlat.set(flat_speed);
+		
+		Robot.shooterWheelMiddle.setPID(p, i, d, f, 0, 100, 0);
+		Robot.shooterWheelMiddle.set(middle_speed);
+		
+		Robot.shooterWheelRear.setPID(p, i, d, f, 0, 100, 0);
+		Robot.shooterWheelRear.set(middle_speed);
+		
+		Debugger.println("Front Tilt PID Setpoint: " +Robot.shooterWheelFrontTilt.getSpeed() +
+							"Front Tilt PID Setpoint: " + Robot.shooterWheelFrontFlat.getSpeed() +
+							"Front Tilt PID Setpoint: " + Robot.shooterWheelMiddle.getSpeed() +
+							"Front Tilt PID Setpoint: " + Robot.shooterWheelRear.getSpeed() +
+							" P: " + p + " D: " + d + " F: " + f + " \n", Robot.commands, Debugger.warning4);
 		
 	}
 
@@ -53,12 +68,20 @@ public class ShooterOn extends Command{
 	@Override
 	protected void end() {
 		// TODO Auto-generated method stub
+		Robot.shooterWheelFrontTilt.set(0);
+		
+		Robot.shooterWheelFrontFlat.set(0);
+		
+		Robot.shooterWheelMiddle.set(0);
+		
+		Robot.shooterWheelRear.set(0);
 		
 	}
 
 	@Override
 	protected void interrupted() {
 		// TODO Auto-generated method stub
+		end();
 		
 	}
 }
