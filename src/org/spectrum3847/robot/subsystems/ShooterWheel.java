@@ -48,6 +48,10 @@ public class ShooterWheel extends Subsystem{
 		return m_motor.get();
 	}
 	
+	public double getError(){
+		return m_motor.getTalon().getError();
+	}
+	
 	public CANTalon getTalon(){
 		return m_motor.getTalon();
 	}
