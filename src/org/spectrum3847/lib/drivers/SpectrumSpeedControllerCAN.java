@@ -28,7 +28,7 @@ public class SpectrumSpeedControllerCAN implements SpeedController {
 		m_controllers = controllers;
         m_pdp_slots = pdp_slots;
         for (int i = 1; i < m_controllers.length; i++) {
-            m_controllers[i].changeControlMode(CANTalon.ControlMode.Follower);
+            m_controllers[i].changeControlMode(CANTalon.TalonControlMode.Follower);
             m_controllers[i].set(m_controllers[0].getDeviceID());
         }
         name = "second";
@@ -98,6 +98,12 @@ public class SpectrumSpeedControllerCAN implements SpeedController {
 	
 	public CANTalon getTalon(){
 		return m_controllers[0];
+	}
+
+	@Override
+	public void stopMotor() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
