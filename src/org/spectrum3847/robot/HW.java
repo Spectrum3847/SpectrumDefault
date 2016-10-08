@@ -26,49 +26,50 @@ public class HW {
 	public static PowerDistributionPanel PDP = new PowerDistributionPanel();
 	
     /**PDP Slots**/
-	public static final int SHOOTER_CAN_1_PDP = 0;
-	public static final int CAN_2_PDP = 1;
+	public static final int LEFT_REAR_DRIVE_MOTOR_PDP = 0;
+	public static final int LEFT_FRONT_DRIVE_MOTOR_PDP = 1;
 	public static final int PWM_2_PDP = 2;
 	public static final int PWM_3_PDP = 3;
 	public static final int PWM_4_PDP = 4;
 	public static final int PWM_5_PDP = 5;
 	public static final int PWM_6_PDP = 6;
 	public static final int PWM_7_PDP = 7;
-	public static final int RIGHT_REAR_DRIVE_MOTOR_8_PDP = 12;
-	public static final int RIGHT_FRONT_DRIVE_MOTOR_9_PDP = 13;
-	public static final int LEFT_REAR_DRIVE_MOTOR_PDP = 14;
-	public static final int LEFT_FRONT_DRIVE_MOTOR_PDP = 15;
-
+	public static final int RIGHT_REAR_DRIVE_MOTOR_PDP = 8;
+	public static final int RIGHT_FRONT_DRIVE_MOTOR_PDP = 9;
+	public static final int SHOOTER_CAN_1_PDP = 1;
+	public static final int CAN_2_PDP = 11;
 	
 	
 	/**MOTOR ASSIGNMENTS (PWM)**/
-    public static final int LEFT_DRIVE_MOTOR_0 = 0;
-    public static final int LEFT_DRIVE_MOTOR_1 = 1;
+    public static final int LEFT_REAR_DRIVE_MOTOR = 0;
+    public static final int LEFT_FRONT_DRIVE_MOTOR = 1;
     public static final int PWM_2 = 2;
     public static final int PWM_3 = 3;
     public static final int PWM_4 = 4;
     public static final int PWM_5 = 5;
     public static final int PWM_6 = 6;
     public static final int PWM_7 = 7;
-    public static final int RIGHT_DRIVE_MOTOR_8 = 8;
-    public static final int RIGHT_DRIVE_MOTOR_9 = 9;
+    public static final int RIGHT_REAR_DRIVE_MOTOR = 8;
+    public static final int RIGHT_FRONT_DRIVE_MOTOR = 9;
     public static final int PWM_10 = 10;
     public static final int PWM_11 = 11;
     public static final int PWM_12 = 12;
     public static final int PWM_13 = 13;
-    public static final int PWM_14 = 14;
-    public static final int PWM_15 = 15;
-    public static final int PWM_16 = 16;
-    public static final int PWM_17 = 17;
-    public static final int PWM_18 = 18;
-    public static final int PWM_19 = 19;
+    public static final int SHOOTER_MOTOR_FRONT_TILT_PDP= 14;
+    public static final int SHOOTER_MOTOR_FRONT_FLAT_PDP = 15;
+    public static final int SHOOTER_MOTOR_MIDDLE_LEFT_PDP = 16;
+    public static final int SHOOTER_MOTOR_MIDDLE_RIGHT_PDP = 17;
+    public static final int SHOOTER_MOTOR_REAR_LEFT_PDP = 18;
+    public static final int SHOOTER_MOTOR_REAR_RIGHT_PDP = 19;
 
 
     /**NON-DRIVEBASE MOTOR ASSIGNMENTS (CAN)**/
-    public static final int SHOOTER_MOTOR_FRONT_TILT = 1;
+    public static final int SHOOTER_MOTOR_FRONT_TILT= 1;
     public static final int SHOOTER_MOTOR_FRONT_FLAT = 2;
-    public static final int SHOOTER_MOTOR_MIDDLE = 3;
-    public static final int SHOOTER_MOTOR_REAR = 4;
+    public static final int SHOOTER_MOTOR_MIDDLE_LEFT = 3;
+    public static final int SHOOTER_MOTOR_MIDDLE_RIGHT = 4;
+    public static final int SHOOTER_MOTOR_REAR_LEFT = 5;
+    public static final int SHOOTER_MOTOR_REAR_RIGHT = 6;
     
     /**DIGITAL SENSOR ALLOCATIONS**/
     public static final int DIGITAL_IO_1 = 1; 
