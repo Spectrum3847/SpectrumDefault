@@ -11,6 +11,8 @@ public class Teleop {
 	
     public static void init() {
         Scheduler.getInstance().removeAll();
+	
+	Robot.logger.openFile();
     }
 
     public static void periodic() {
@@ -21,6 +23,7 @@ public class Teleop {
         //Tank Drive
         //Robot.drive.setOpenLoop(new DriveSignal(HW.Driver_Gamepad.getLeftY(), HW.Driver_Gamepad.getRightY()));
         
+	Robot.logger.logAll();
     }
 
     public static void cancel() {
