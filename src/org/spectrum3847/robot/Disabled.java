@@ -15,6 +15,7 @@ public class Disabled {
     public static void init() {
         Scheduler.getInstance().removeAll();
         //Init.sendCam.start();
+        Robot.logger.close();
     }
 
     //Periodic method called roughly once every 20ms
