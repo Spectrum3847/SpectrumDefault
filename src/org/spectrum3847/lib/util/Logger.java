@@ -16,7 +16,7 @@ import org.spectrum3847.robot.Robot;
 public class Logger {
    
     private BufferedWriter writer;
-    private boolean logging = true; 
+    private boolean logging =false; 
     private final String loggerBoolean = "Logging";
     private static Logger instance;
     private String fileName ="log";
@@ -74,13 +74,12 @@ public class Logger {
 	        try{
 	            path = this.getPath();
 	            this.writer = new BufferedWriter(new FileWriter(path));
-	            //this.writer.write("time,leftOut,rightOut,backOut,leftSpeed,rightSpeed,backSpeed,xPosition,yPosition,batteryVolt,leftCurrent1,leftCurrent2,rightCurrent1,rightCurrent2,backCurrent1,backCurrent2");
-	            //this.writer.newLine();
+	            this.writer.write("Time, Battery Voltage, Left Motor 1 Current, Left Motor 2 Current, Left Motor 3 Current, Left Motor 4 Current, Right Motor 1 Current, Right Motor 2 Current,  Right Motor 3 Current,  Right Motor 4 Current,  Brownout Stage 1,  Brownout Stage 2,  Left CIMs Speed Setting,  Left 775pro Speed Setting,  Right CIMs Speed Setting,  Right 775pro Speed Setting,  775pro State");
+	            this.writer.newLine();
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
     	}
-    	System.out.println("File opened.");
     }
     
     private String getPath() {
@@ -97,7 +96,37 @@ public class Logger {
     public void logAll() {
     	if(this.wantToLog()){
 	        try {
-	      
+	        	this.writer.write(String.format("%f,", Timer.getFPGATimestamp()));
+	        	
+	        	//Voltage, Currents, Brownout States, Motor Speed Settings, 775 Pro enable/disable
+	        	
+	        	//Battery Voltage
+	        	this.writer.write(String.format("%f", HW.PDP.getVoltage()));
+	        	
+	        	//Currents to motors
+	        	this.writer.write(String.format("%f,", HW.PDP.getCurrent(HW.LEFT_DRIVE_MOTOR_1_PDP)));
+	        	this.writer.write(String.format("%f,", HW.PDP.getCurrent(HW.LEFT_DRIVE_MOTOR_2_PDP)));
+	        	this.writer.write(String.format("%f,", HW.PDP.getCurrent(HW.LEFT_DRIVE_MOTOR_3_PDP)));
+	        	this.writer.write(String.format("%f,", HW.PDP.getCurrent(HW.LEFT_DRIVE_MOTOR_4_PDP)));
+	        	
+	        	this.writer.write(String.format("%f,", HW.PDP.getCurrent(HW.RIGHT_DRIVE_MOTOR_1_PDP)));
+	        	this.writer.write(String.format("%f,", HW.PDP.getCurrent(HW.RIGHT_DRIVE_MOTOR_2_PDP)));
+	        	this.writer.write(String.format("%f,", HW.PDP.getCurrent(HW.RIGHT_DRIVE_MOTOR_3_PDP)));
+	        	this.writer.write(String.format("%f,", HW.PDP.getCurrent(HW.RIGHT_DRIVE_MOTOR_4_PDP)));
+	        	
+	        	//Brownout States
+	        	this.writer.write(String.format("%f,", ControllerPower.getEnabled6V()));
+	        	this.writer.write(String.format("%f,", ControllerPower.getEnabled5V()));
+	        	
+	        	//Motor Speed Settings
+	        	this.writer.write(String.format("%f,", Robot.leftDriveCIMs.get()));
+	        	this.writer.write(String.format("%f,", Robot.leftDrive775.get()));
+	        	this.writer.write(String.format("%f,", Robot.rightDriveCIMs.get()));
+	        	this.writer.write(String.format("%f,", Robot.rightDrive775.get()));
+	        	
+	        	//775pro enable/disable
+	        	this.writer.write(String.format("%f,", (Robot.drive.get775Enabled() ? 1:0) ));
+	        	
 	        	/*
 	            this.writer.write(String.format("%d", new java.util.Date().getTime()));
 	            this.writer.write(String.format(",%.3f", this.robotOut.getDriveLeft()));
@@ -147,6 +176,5 @@ public class Logger {
 	            }
 	    	}
     	}
-    	System.out.println("Closing logger.");
     }
 }
