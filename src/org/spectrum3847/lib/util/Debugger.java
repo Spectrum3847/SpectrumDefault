@@ -6,8 +6,9 @@ package org.spectrum3847.lib.util;
 
 import java.util.ArrayList;
 
-import edu.wpi.first.wpilibj.communication.FRCNetworkCommunicationsLibrary;
-import edu.wpi.first.wpilibj.communication.HALControlWord;
+//import edu.wpi.first.wpilibj.communication.FRCNetworkCommunicationsLibrary;
+import edu.wpi.first.wpilibj.hal.ControlWord;
+import edu.wpi.first.wpilibj.hal.HAL;
 
 /**
  * Based on Team 1114 code from 2015
@@ -52,10 +53,12 @@ public class Debugger {
         if(meetsCurrRequirements(flag, level)) {
             System.out.println(level + ": [" + flag + "] " + msg);
         }
-        
+        /*
+         * Disabled until We can figure out where this method lives now
         if (level >= error5){
         	writeToDS(msg);
         }
+        */
     }
     
     public static void println(String msg, String flag) {
@@ -206,14 +209,15 @@ public class Debugger {
         return false;
     }
     
+    /*
     //written by 1554
     public static final void writeToDS(String message) {
-		final HALControlWord controlWord = FRCNetworkCommunicationsLibrary.HALGetControlWord();
+		final ControlWord controlWord = new ControlWord();
 		if (controlWord.getDSAttached()) {
 			FRCNetworkCommunicationsLibrary.HALSetErrorData(message);
 		}
 	}
-
+    
     //written by 1554
     public static final void exceptionToDS(Throwable t) {
 		final StackTraceElement[] stackTrace = t.getStackTrace();
@@ -241,4 +245,5 @@ public class Debugger {
 
 		writeToDS(message.toString());
 	}
+	*/
 }

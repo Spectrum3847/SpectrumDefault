@@ -1,6 +1,7 @@
 package org.spectrum3847.robot.subsystems;
 
-import edu.wpi.first.wpilibj.CANTalon;
+import com.ctre.CANTalon;
+
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -82,10 +83,10 @@ public class SpeedCANSubsystem extends CANMotorSubsystem {
 	 * Call this when you want to get the PID values from the Dashboard
 	 */
 	public void updatePIDFromDashboard(){
-		setP(SmartDashboard.getNumber(this.getName() + " P:"));
-		setI(SmartDashboard.getNumber(this.getName() + " I:"));
-		setD(SmartDashboard.getNumber(this.getName() + " D:"));
-		setF(SmartDashboard.getNumber(this.getName() + " F:"));
+		setP(SmartDashboard.getNumber(this.getName() + " P:", 0));
+		setI(SmartDashboard.getNumber(this.getName() + " I:", 0));
+		setD(SmartDashboard.getNumber(this.getName() + " D:", 0));
+		setF(SmartDashboard.getNumber(this.getName() + " F:", 0));
 	}
 	
 	/**
@@ -93,7 +94,7 @@ public class SpeedCANSubsystem extends CANMotorSubsystem {
 	 */
 	public void updateCompleteDashboard(){
 		updatePIDFromDashboard();
-		setSetpoint(SmartDashboard.getNumber(this.getName() + " Setpoint:"));
+		setSetpoint(SmartDashboard.getNumber(this.getName() + " Setpoint:", 0));
 	}
 	
 	public void setSetpoint(double s){

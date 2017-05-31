@@ -2,7 +2,7 @@ package org.spectrum3847.robot.subsystems;
 
 import org.spectrum3847.lib.drivers.SpectrumSpeedControllerCAN;
 
-import edu.wpi.first.wpilibj.CANTalon;
+import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class CANMotorSubsystem extends Subsystem{

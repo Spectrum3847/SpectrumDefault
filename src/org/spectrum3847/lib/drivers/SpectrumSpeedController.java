@@ -67,13 +67,15 @@ public class SpectrumSpeedController implements SpeedController {
         return m_controllers[0].get() * sign();
     }
 
+    /* functionality removed from interface
     @Override
     public void set(double speed, byte syncGroup) {
         for (SpeedController controller : m_controllers) {
             controller.set(speed * sign(), syncGroup);
         }
     }
-
+     */
+    
     @Override
     public void set(double speed) {
         for (SpeedController controller : m_controllers) {

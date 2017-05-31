@@ -3,6 +3,8 @@ package org.spectrum3847.robot;
 
 import org.spectrum3847.lib.drivers.Gamepad;
 import org.spectrum3847.lib.drivers.SpectrumEncoder;
+import org.spectrum3847.lib.drivers.SpectrumSolenoid;
+import org.spectrum3847.lib.drivers.SpectrumSpeedControllerCAN;
 import org.spectrum3847.lib.util.Debugger;
 import org.spectrum3847.lib.util.Logger;
 import org.spectrum3847.robot.commands.CANManualControl;
@@ -10,6 +12,8 @@ import org.spectrum3847.robot.subsystems.Drive;
 import org.spectrum3847.robot.subsystems.MotorWithLimits;
 import org.spectrum3847.robot.subsystems.SolenoidSubsystem;
 import org.spectrum3847.robot.subsystems.SpeedCANSubsystem;
+
+import com.ctre.CANTalon;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -34,7 +38,7 @@ public class Robot extends IterativeRobot {
 	public static final String auton = "AUTON";
 	public static final String commands = "COMMAND";
 	
-	// Create a single static instance of all of your subsystems
+	// Create a single static instance of all of your subsystems and Motor Controllers
     // This MUST be here. If the OI creates Commands (which it very likely
     // will), constructing it during the construction of CommandBase (from
     // which commands extend), subsystems are not guaranteed to be
@@ -42,27 +46,67 @@ public class Robot extends IterativeRobot {
     // news. Don't move it.
 	
 	public static Drive drive; 
-	public static MotorWithLimits motor3;
-	public static SolenoidSubsystem sol_0_1;
-	public static SpeedCANSubsystem shooter;
+	public static SpectrumSpeedControllerCAN leftDrive;
+	public static SpectrumSpeedControllerCAN rightDrive;
+
+	public static CANTalon left_drive_talon_1;
+	public static CANTalon left_drive_talon_2;
+	public static CANTalon left_drive_talon_3;
+	
+	public static CANTalon right_drive_talon_1;
+	public static CANTalon right_drive_talon_2;
+	public static CANTalon right_drive_talon_3;
+	
+	public static SpectrumSolenoid brakes;
+	
 	public static Compressor compressor;
 	
     public static void setupSubsystems(){
     	compressor = new Compressor(0);
-    	drive = new Drive("defaultDrive", 
-    						HW.LEFT_DRIVE_MOTOR_0, HW.LEFT_DRIVE_MOTOR_0_PDP, 
-    						HW.RIGHT_DRIVE_MOTOR_9, HW.RIGHT_DRIVE_MOTOR_9_PDP, 
-    						new SpectrumEncoder(0, 1, 240), new SpectrumEncoder(8,9, 240)
-    						);
     	
-    	//If used the HW elements should be refactor-renamed to avoid them being used in another part of the code.
-    	motor3 = new MotorWithLimits("Motor 3", HW.PWM_3, HW.PWM_3_PDP, HW.DIGITAL_IO_4, HW.DIGITAL_IO_5);
     	
-    	//Setup a Solenoid Subsystem and give it an initial state
-    	sol_0_1 = new SolenoidSubsystem("Solenoid - 0 & 1", HW.SOL_0, HW.SOL_1);
-    	sol_0_1.retract();
-    	shooter = new SpeedCANSubsystem("Shooter", HW.SHOTOR_MOTOR_2, HW.SHOOTER_CAN_1_PDP);
-    	shooter.defaultCommand(new CANManualControl(shooter, HW.Operator_Gamepad, Gamepad.LeftY)); //This established a manual control default mode for the shooter wheel
+    	//Setup the motor controllers for a subsystem, along with any settings
+    	
+    	left_drive_talon_1 = new CANTalon(HW.LEFT_DRIVE_BACK_MOTOR);
+    	left_drive_talon_2 = new CANTalon(HW.LEFT_DRIVE_MIDDLE_MOTOR);
+    	left_drive_talon_3 = new CANTalon(HW.LEFT_DRIVE_FRONT_MOTOR);
+    	left_drive_talon_1.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+    	left_drive_talon_1.enableBrakeMode(true);
+    	left_drive_talon_1.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
+    	left_drive_talon_2.set(left_drive_talon_1.getDeviceID());
+    	left_drive_talon_2.enableBrakeMode(true);
+    	left_drive_talon_3.changeControlMode(CANTalon.TalonControlMode.Follower);
+    	left_drive_talon_3.set(left_drive_talon_1.getDeviceID());
+    	left_drive_talon_3.enableBrakeMode(true);
+    	
+    	right_drive_talon_1 = new CANTalon(HW.RIGHT_DRIVE_BACK_MOTOR);
+    	right_drive_talon_2 = new CANTalon(HW.RIGHT_DRIVE_MIDDLE_MOTOR);
+    	right_drive_talon_3 = new CANTalon(HW.RIGHT_DRIVE_FRONT_MOTOR);
+    	right_drive_talon_1.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+    	right_drive_talon_1.enableBrakeMode(true);
+    	right_drive_talon_2.changeControlMode(CANTalon.TalonControlMode.Follower);
+    	right_drive_talon_2.set(right_drive_talon_1.getDeviceID());
+    	right_drive_talon_2.enableBrakeMode(true);
+    	right_drive_talon_3.changeControlMode(CANTalon.TalonControlMode.Follower);
+    	right_drive_talon_3.set(right_drive_talon_1.getDeviceID());
+    	right_drive_talon_3.enableBrakeMode(true);
+    	
+    	//Setup SpectrumSpeedController objects, a way of keeping track of blocks of motor controllers and their associated PDP ports
+    	leftDrive = new SpectrumSpeedControllerCAN(
+    				new CANTalon[] {left_drive_talon_1, left_drive_talon_2, left_drive_talon_3},
+    				new int[] {HW.LEFT_DRIVE_BACK_MOTOR_PDP, HW.LEFT_DRIVE_MIDDLE_MOTOR_PDP, HW.LEFT_DRIVE_FRONT_MOTOR_PDP}
+    			);
+    	
+    	rightDrive = new SpectrumSpeedControllerCAN(
+    				new CANTalon[] {right_drive_talon_1, right_drive_talon_2, right_drive_talon_3},
+    				new int[] {HW.RIGHT_DRIVE_BACK_MOTOR_PDP, HW.RIGHT_DRIVE_MIDDLE_MOTOR_PDP, HW.RIGHT_DRIVE_FRONT_MOTOR_PDP}
+    			);
+    	
+    	//Setup any needed Solenoids
+    	brakes = new SpectrumSolenoid(HW.BRAKE_SOL);
+    	
+    	//Instantiate the subsystem
+    	drive = new Drive("defaultDrive", leftDrive, rightDrive, brakes);
     }
     
     //Used to keep track of the robot current state easily
@@ -95,7 +139,7 @@ public class Robot extends IterativeRobot {
     
     private static void initDebugger(){
     	Debugger.setLevel(Debugger.info3); //Set the initial Debugger Level
-    	Debugger.flagOn(general); //Set all the flags on, comment out ones you want off
+    	Debugger.flagOn(general); //Set all the flags on, change to Debugger.flagOff(flag) for ones you want off
     	Debugger.flagOn(controls);
     	Debugger.flagOn(input);
     	Debugger.flagOn(output);

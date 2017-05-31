@@ -4,7 +4,8 @@ import org.spectrum3847.lib.util.Debugger;
 import org.spectrum3847.robot.HW;
 import org.spectrum3847.robot.Robot;
 
-import edu.wpi.first.wpilibj.CANTalon;
+import com.ctre.CANTalon;
+
 import edu.wpi.first.wpilibj.SpeedController;
 
 public class SpectrumSpeedControllerCAN implements SpeedController {
@@ -75,11 +76,14 @@ public class SpectrumSpeedControllerCAN implements SpeedController {
             m_controllers[0].pidWrite(output * sign());
 	}
 
+	/*
+	 * REMOVED FROM SPEEDCONTROLLER INTEFRACE
 	@Override
 	public void set(double speed, byte DoesntDoAnything) {
 		m_controllers[0].set(speed * sign());
 	}
-
+	*/
+	
 	@Override
 	public void set(double speed) {
 		m_controllers[0].set(speed * sign());

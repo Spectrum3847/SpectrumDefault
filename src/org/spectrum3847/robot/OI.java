@@ -1,9 +1,8 @@
 package org.spectrum3847.robot;
 
-import org.spectrum3847.lib.drivers.Gamepad;
-import org.spectrum3847.robot.commands.CANRunAtSetpoint;
-import org.spectrum3847.robot.commands.SolenoidCommand;
 
+import org.spectrum3847.lib.drivers.SpectrumButton;
+import org.spectrum3847.lib.drivers.SpectrumButton.XboxButton;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -11,16 +10,14 @@ import org.spectrum3847.robot.commands.SolenoidCommand;
  */
 public class OI {
     //// CREATING BUTTONS
-    // One type of button is a joystick button which is any button on a joystick.
-    // You create one by telling it which joystick it's on and which button
-    // number it is.
-    // Joystick stick = new Joystick(port);
-    // Button button = new JoystickButton(stick, buttonNumber);
-    
-    // There are a few additional built in buttons you can use. Additionally,
-    // by subclassing Button you can create custom triggers and bind those to
-    // commands the same as any other Button.
-    
+	//SpectrumDefault includes a number of ways of interfacing with your gamepad
+	//One of these is through the variety of "buttons" - implementations of WPILib's Button abstract
+	//Types of buttons include: Buttons, AxisButtons, and POVButtons
+	//All are used in a similar fashion, below is an example use of the SpectrumButton Class
+	//new SpectrumButton(HW.Operator_Gamepad, XboxButton.B).toggleWhenPressed(new ShooterOn());
+	
+	//Refer to the SpectrumButton, SpectrumAxisButton, and SpectrumPOVButton classes for more use cases
+	
     //// TRIGGERING COMMANDS WITH BUTTONS
     // Once you have a button, it's trivial to bind it to a button in one of
     // four ways:
@@ -43,14 +40,8 @@ public class OI {
     //Use this constructor to setup up button schedulers for commands
     public OI() {
     	//Driver
-    	/*HW.Driver_Gamepad.getButton(Gamepad.A_BUTTON).toggleWhenPressed(
-    								new SolenoidCommand("0 & 1 Extend",
-    								Robot.sol_0_1,
-    								true));
-    	*/
-    	HW.Operator_Gamepad.getButton(Gamepad.A_BUTTON).toggleWhenPressed(
-    								new CANRunAtSetpoint("Shooter at Setpoint PID",
-    								Robot.shooter));	
+    	
+    	//Operator
     	
     }
 }
